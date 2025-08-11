@@ -29,3 +29,6 @@ class CircleShape(pygame.sprite.Sprite):
             return True
         else:
             return False
+
+    def destroy(self):
+        self.kill()

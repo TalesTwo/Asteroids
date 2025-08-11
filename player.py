@@ -10,6 +10,7 @@ class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
+        self.cooldown = 0
 
     # create triangle for the screen
     def triangle(self):
@@ -34,11 +35,15 @@ class Player(CircleShape):
         self.position += forward * PLAYER_SPEED * dt
 
     # create a shot and fire it forward
-    def shoot(self):
-        shot = Shot(self.position[0], self.position[1])
-        vector = pygame.Vector2(1, 0).rotate(self.rotation + 90)
-        vector *= PLAYER_SHOOT_SPEED
-        shot.velocity = vector
+    def shoot(self, dt):
+        if self.cooldown <= 0:
+            shot = Shot(self.position[0], self.position[1])
+            vector = pygame.Vector2(1, 0).rotate(self.rotation + 90)
+            vector *= PLAYER_SHOOT_SPEED
+            shot.velocity = vector
+            self.cooldown = PLAYER_SHOOT_COOLDOWN
+        else:
+            self.cooldown -= dt
 
     # check for key presses, update obhect accordingly
     def update(self, dt):
@@ -53,4 +58,4 @@ class Player(CircleShape):
         if keys[pygame.K_s]: # move player backward
             self.move(dt * -1)
         if keys[pygame.K_SPACE]:
-            self.shoot()
+            self.shoot(dt)
